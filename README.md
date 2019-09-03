@@ -1,10 +1,7 @@
 # MiniORM
-This is an ORM Developed by me. Its a work in progress.
-This is an ORM. It been kept simple. It is able to perform CRUD Operations. Cannot create tables or manage foriegn keys.
+This is a simple ORM. It is able to perform CRUD Operations. It ignores creating tables or manage foriegn keys. Works best when only mapping to other entites.
 
-The way to use it is very simple. It works best when using Repository Pattern.
-
-SO what you can do is, create a Repo for an Entity lets say User
+It works best when using Repository Pattern.
 
 You would create User.cs 
 
@@ -72,3 +69,13 @@ this is how you will create a repository for this
         	return DBHelper.QueryList("SELECT * FROM Users");
     	}
 	}
+
+
+You can also use the QueryMaker.cs seperately to get the written querries and use them however you like.
+
+something like
+
+      string SelectQuery = QueryMaker.SelectQuery<User>();
+      string InsertQuery = QueryMaker.InsertQuery<User>();
+      string UpdateQuery = QueryMaker.UpdateQuery<User>("Where ID = @ID", new {ID = 1}); // Currently I am unable to pass the Where Condition as a predicate.
+      
