@@ -71,5 +71,4 @@ public class UserRepository
     {
         return DBHelper.QueryList("SELECT * FROM Users");
     }
-
 }
