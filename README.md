@@ -1,5 +1,5 @@
 # MiniORM
-This is a very simple ORM. It is able to perform CRUD Operations. It ignores creating tables or manage foriegn keys. Works best when only mapping to other entites. It doesn't add complexity and keeps it just to the mapping, relying on your query writting skills.
+This is a very simple ORM. Its based on ADO.NET. It ignores creating tables or manage foriegn keys. Works best when only mapping to other entites. It doesn't add complexity and keeps it just to the mapping, relying on your query writting skills.
 
 It works best when using Repository Pattern.
 
