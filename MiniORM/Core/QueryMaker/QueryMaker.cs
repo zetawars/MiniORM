@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 //Author : Shazaki Zetawars //
-namespace System
+namespace MiniORM
 {
     public class QueryMaker : DB_Common
     {
@@ -112,7 +113,6 @@ namespace System
         {
             return typeof(T).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly).ToList().Where(x => !(Attribute.IsDefined(x, typeof(DontUpdate))) && !(Attribute.IsDefined(x, typeof(Key)))).ToList();
         }
-
         private static string GetColumnName(PropertyInfo pi)
         {
             if (Attribute.IsDefined(pi, typeof(Column)))
@@ -137,9 +137,7 @@ namespace System
                 return $"[dbo].[{typeof(T).Name}]";
             }
         }
-      
-
-        private static string ValueReader(Object value)
+        private static string ValueReader(object value)
         {
             if (value == null)
             {

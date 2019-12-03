@@ -219,7 +219,7 @@
   },
   "libraries": {
     "Microsoft.NETCore.Platforms/1.1.0": {
-      "sha512": "kz0PEW2lhqygehI/d6XsPCQzD7ff7gUJaVGPVETX611eadGsA3A877GdSlU0LRVMCTH/+P3o2iDTak+S08V2+A==",
+      "sha512": "a/iSwnRZb+LHFk49hQOyThh/ZNC3vsbZsF65XwQIb863qF6msmhdQtxGXFL28Ob2NsCz/drEj28BJd/YPpLRBg==",
       "type": "package",
       "path": "microsoft.netcore.platforms/1.1.0",
       "files": [
@@ -565,7 +565,7 @@
       ]
     },
     "System.Diagnostics.DiagnosticSource/4.5.0": {
-      "sha512": "eIHRELiYDQvsMToML81QFkXEEYXUSUT2F28t1SGrevWqP+epFdw80SyAXIKTXOHrIEXReFOEnEr7XlGiC2GgOg==",
+      "sha512": "UumL3CJklk5WyEt0eImPmjeuyY1JgJ7Thmg2hAeZGKCv+9iuuAsoc2wcXjypdo3J8VNEmVCH2Bgn/kIw8NI2bA==",
       "type": "package",
       "path": "system.diagnostics.diagnosticsource/4.5.0",
       "files": [
@@ -831,11 +831,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Zawar\\source\\repos\\MiniORM\\MiniORM\\MiniORM.csproj",
+      "projectUniqueName": "D:\\MiniORM\\MiniORM\\MiniORM\\MiniORM.csproj",
       "projectName": "MiniORM",
-      "projectPath": "C:\\Users\\Zawar\\source\\repos\\MiniORM\\MiniORM\\MiniORM.csproj",
+      "projectPath": "D:\\MiniORM\\MiniORM\\MiniORM\\MiniORM.csproj",
       "packagesPath": "C:\\Users\\Zawar\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Zawar\\source\\repos\\MiniORM\\MiniORM\\obj\\",
+      "outputPath": "D:\\MiniORM\\MiniORM\\MiniORM\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

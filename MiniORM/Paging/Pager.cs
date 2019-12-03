@@ -1,5 +1,5 @@
 ﻿//Author : Shazaki Zetawars //
-namespace System
+namespace MiniORM
 {
     public class Pager
     {

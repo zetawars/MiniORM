@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 //Author : Shazaki Zetawars //
-namespace System
+namespace MiniORM
 {
     public class PageListObject<T>
     {

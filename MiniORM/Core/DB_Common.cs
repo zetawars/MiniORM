@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 //Author : Shazaki Zetawars //
-namespace System
+namespace MiniORM
 {
     public class DB_Common
     {

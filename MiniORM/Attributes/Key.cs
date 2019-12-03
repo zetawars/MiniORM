@@ -1,5 +1,7 @@
 ﻿//Author : Shazaki Zetawars //
-namespace System
+using System;
+
+namespace MiniORM
 {
     public class Key : Attribute
     {

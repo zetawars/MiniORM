@@ -6,3 +6,11 @@ C:\Users\Zawar\source\repos\MiniORM\MiniORM\obj\Debug\netstandard2.0\MiniORM.Ass
 C:\Users\Zawar\source\repos\MiniORM\MiniORM\bin\Debug\netstandard2.0\MiniORM.pdb
 C:\Users\Zawar\source\repos\MiniORM\MiniORM\obj\Debug\netstandard2.0\MiniORM.dll
 C:\Users\Zawar\source\repos\MiniORM\MiniORM\obj\Debug\netstandard2.0\MiniORM.pdb
+D:\MiniORM\MiniORM\MiniORM\obj\Debug\netstandard2.0\MiniORM.csproj.CoreCompileInputs.cache
+D:\MiniORM\MiniORM\MiniORM\obj\Debug\netstandard2.0\MiniORM.AssemblyInfoInputs.cache
+D:\MiniORM\MiniORM\MiniORM\obj\Debug\netstandard2.0\MiniORM.AssemblyInfo.cs
+D:\MiniORM\MiniORM\MiniORM\obj\Debug\netstandard2.0\MiniORM.dll
+D:\MiniORM\MiniORM\MiniORM\obj\Debug\netstandard2.0\MiniORM.pdb
+D:\MiniORM\MiniORM\MiniORM\bin\Debug\netstandard2.0\MiniORM.deps.json
+D:\MiniORM\MiniORM\MiniORM\bin\Debug\netstandard2.0\MiniORM.dll
+D:\MiniORM\MiniORM\MiniORM\bin\Debug\netstandard2.0\MiniORM.pdb

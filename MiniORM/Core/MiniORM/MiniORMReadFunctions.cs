@@ -1,102 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 //Author : Shazaki Zetawars //
-namespace System
+namespace MiniORM
 {
 
 
-    public class MiniORM : DB_Common
+    public partial class MiniORM : DB_Common
     {
-        private string ConnectionString { get; set; }
-
-        public MiniORM(string ConnectionString)
-        {
-            this.ConnectionString = ConnectionString;
-        }
-
-        #region InsertFunctions
-        public bool Insert<T>(T _Object, string schemaName = null, string tableName = null)
-        {
-            return ExecuteQuery(QueryMaker.InsertQuery(_Object, schemaName, tableName));
-        }
-        public bool InsertAndGetID<T>(T _Object, string schemaName = null, string tableName = null)
-        {
-            string query = QueryMaker.InsertQuery(_Object, schemaName, tableName) + "SELECT SCOPE_IDENTITY();";
-            int ID = GetScaler(query);
-            foreach (var prop in _Object.GetType().GetProperties().Where(x => (Attribute.IsDefined(x, typeof(Key)))).ToList())
-            {
-                prop.SetValue(_Object, ID);
-            }
-            return true;
-        }
-
-        #endregion
-
-        #region UpdateFunctions
-        public bool Update<T>(T _Object, string whereClause, object Params, string schemaName = null, string tableName = null)
-        {
-            return ExecuteQuery(QueryMaker.UpdateQuery(_Object, whereClause, schemaName, tableName), Params);
-        }
-        #endregion
-
-        #region DeleteFunctions
-        public bool Delete<T>(string whereClause, object Params, string schemaName = null, string tableName = null)
-        {
-            return ExecuteQuery(QueryMaker.DeleteQuery<T>(whereClause), Params);
-        }
-        #endregion
-
-        #region OtherFunctions
-        public int GetScaler(string query, object Params = null)
-        {
-            using (SqlConnection Connection = new SqlConnection(ConnectionString))
-            {
-                Connection.Open();
-                SqlCommand cmd = GetSqlCommandWithParams(query, Connection, Params);
-                int count = Convert.ToInt32(cmd.ExecuteScalar());
-                Connection.Close();
-                return count;
-            }
-        }
-        public double GetDouble(string query, object Params = null)
-        {
-            using (SqlConnection Connection = new SqlConnection(ConnectionString))
-            {
-                Connection.Open();
-                SqlCommand cmd = GetSqlCommandWithParams(query, Connection, Params);
-                double count = Convert.ToDouble(cmd.ExecuteScalar());
-                Connection.Close();
-                return count;
-            }
-        }
-        public bool ExecuteQuery(string query, object Params = null)
-        {
-            using (SqlConnection Connection = new SqlConnection(ConnectionString))
-            {
-                Connection.Open();
-                SqlCommand cmd = GetSqlCommandWithParams(query, Connection, Params);
-                int rowseffected = cmd.ExecuteNonQuery();
-                Connection.Close();
-                return true;
-            }
-        }
-        public bool ExecuteTransactionQuery(string query, object Params = null)
-        {
-            query = $"{QueryMaker.BeginTransQuery()} {query} {QueryMaker.CommitTransQuery()}";
-            using (SqlConnection Connection = new SqlConnection(ConnectionString))
-            {
-                Connection.Open();
-                SqlCommand cmd = GetSqlCommandWithParams(query, Connection, Params);
-                int rowseffected = cmd.ExecuteNonQuery();
-                Connection.Close();
-                return true;
-            }
-        }
-        #endregion
-
         #region ReadFunctions
         public List<Dictionary<string, string>> QueryList(string query, object Params = null)
         {
@@ -317,32 +231,6 @@ namespace System
 
         }
         #endregion
-        #region Private methods   
-        private SqlCommand GetSqlCommandWithParams(string query, SqlConnection Connection, object Params)
-        {
-            SqlCommand cmd = new SqlCommand(query, Connection);
-            if (Params != null)
-            {
-                foreach (var element in Params.GetType().GetProperties())
-                {
-                    cmd.Parameters.AddWithValue(element.Name, element.GetValue(Params));
-                }
-            }
-            return cmd;
-        }
-        private void DBReader(Object _Object, PropertyInfo property, SqlDataReader reader)
-        {
-            if (!reader.IsDBNull(reader.GetOrdinal(property.Name)))
-            {
-                Type convertTo = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
-                property.SetValue(_Object, Convert.ChangeType(reader[property.Name], convertTo), null);
-            }
-            else
-            {
-                property.SetValue(_Object, null);
-            }
-        }
-        #endregion Private methods
     }
 
 }
