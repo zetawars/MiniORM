@@ -1,6 +1,5 @@
 # MiniORM
 This is a very simple ORM. Its based on ADO.NET. It ignores creating tables or manage foriegn keys. Works best when only mapping to other entites. It doesn't add complexity and keeps it just to the mapping, relying on your query writting skills.
-
 It works best when using Repository Pattern.
 
 You would create User.cs 
@@ -13,7 +12,7 @@ You would create User.cs
     	public string FirstName {get;set;}
     	public string LastName {get;set;}
     	public DateTime LastLoginDate{get;set;}
-    	[Colum("Blocked")] // Suppose that ColumnName is different from the Entity class.
+    	[Column("Blocked")] // Suppose that ColumnName is different from the Entity class.
     	public bool Status {get;set;}
 	}
 
@@ -28,23 +27,17 @@ this is how you will create a repository for this
             this.ORM = new MiniORM("ConnectionStringHere");// You can also use it anyway you like.
         }
 
-
         // This is for the GetSingle User
         public User Get(int UserID)
         {
             return ORM.Get<User>(UserID);
         }
 
-
-
-
         // This is for the GetList of User
         public List<User> GetList()
         {
             return ORM.GetList<User>();
         }
-
-
 
         //If you want to pass a custom Query
         public List<User> GetList()
@@ -57,28 +50,25 @@ this is how you will create a repository for this
         {
             return ORM.Insert(u);
         }
-
-
+		
         //This is how you update.
         public bool Update(User u)
         {
             return ORM.Update(u, "Where ID = @ID", new { ID = u.ID });
         }
 
-
-
         // dynamically returned lists are still in progress.
         //This is for getting dynamically created objects. 
         public dynamic GetList()
         {
-            string query = "SELECT * FROM  WITH JOINS";
-            return ORM.GetAll(query);
+            string query = "SELECT * FROM Users INNER JOIN Roles ON Roles.UserID = Users.ID";
+            return ORM.GetAll(query); // This returns dynamic list.
         }
 
         //This is for Single element using dynamic.
         public dynamic Get(int ID)
         {
-            return ORM.Get("SELECT * FROM Users");
+            return ORM.Get("SELECT * FROM Users"); // this returns a dynamic single element
         }
     }
 
@@ -87,7 +77,32 @@ You can also use the QueryMaker.cs seperately to get the written querries and us
 
 something like
 
+	  var user = new User
+	  {
+		DateOfBirth = DateTime.Parse("1994-01-04"),
+        GPA = 3.10,
+        ID = 10,
+        LoginDate =  null,
+        Name = "Zawar",
+        PIN = 2291,
+        Rating = 9.01,
+        Salary = 100000,
+        TimeStamp = DateTime.Now
+	  };
+	  
       string SelectQuery = QueryMaker.SelectQuery<User>();
-      string InsertQuery = QueryMaker.InsertQuery<User>();
-      string UpdateQuery = QueryMaker.UpdateQuery<User>("Where ID = @ID", new {ID = 1}); // Currently I am unable to pass the Where Condition as a predicate.
+      string InsertQuery = QueryMaker.InsertQuery(user);
+      string UpdateQuery = QueryMaker.UpdateQuery(user); //when updating with the Key value.
+      string UpdateQuery = QueryMaker.UpdateQuery(user, "Where ID = @ID", new {ID = 1}); // Or pass a custom condition. Currently I am unable to pass the Where Condition as a predicate.
       
+And then you can concatenate these to do a transaction. by using BeginTransQuery and CommitTransQuery. 
+
+	 
+	 string query = QueryMaker.BeginTransQuery;// Starting Transaction
+	 query += QueryMaker.InsertQuery(user);
+	 query += QueryMaker.UpdateQuery(user);
+	 query += QueryMaker.CommitTransQuery; // Committing Transaction
+	 ORM.ExecuteQuery(query);
+	 
+	 
+	 
