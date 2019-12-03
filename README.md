@@ -68,9 +68,7 @@ this is how you will create a repository for this
     
     
     
-    	// dynamically returned lists are still in progress. right now it uses a List<Dictionary<string,string>> for getting data without classes
-    
-    	
+    	// dynamically returned lists are still in progress.
 	//This is for getting dynamically created objects. 
 	public dynamic GetList()
 	{
@@ -84,7 +82,7 @@ this is how you will create a repository for this
 	        return ORM.Get("SELECT * FROM Users");
 	}
 	
-	}
+}
 
 
 You can also use the QueryMaker.cs seperately to get the written querries and use them however you like.
