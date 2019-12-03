@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Zetawars.ORM
 {
@@ -21,7 +19,7 @@ namespace Zetawars.ORM
 
         public virtual List<T> GetAll()
         {
-            return ORM.GetList<T>();
+            return ORM.GetAll<T>();
         }
 
         public virtual T Get(int ID)

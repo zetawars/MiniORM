@@ -8,13 +8,17 @@ namespace ORMTests
     public class MiniORMTest
     {
 
-        public UserRepository UserRepo = new UserRepository();
+        
 
 
         [TestMethod]
         public void ReadMethod()
         {
-            var users = UserRepo.GetAll();
+            var orm = new MiniORM("Data Source=(local);Initial Catalog=Scrape;User ID=sa;Password=786");
+            var m = orm.GetAll("SELECT * FROM Category");
+            var k = m[0].ID;
+
+
         }
 
         [TestMethod]

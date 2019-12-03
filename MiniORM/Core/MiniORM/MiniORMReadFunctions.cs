@@ -2,15 +2,38 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Dynamic;
 using System.Reflection;
+using Microsoft.CSharp;
 namespace Zetawars.ORM
 {
     public partial class MiniORM : DBCommon
     {
         #region ReadFunctions
-        public List<Dictionary<string, string>> QueryList(string query, object Params = null)
+        
+        public PageListObject<T> GetPagedList<T>(string query, string sortBy, string order, int numberOfRecords, int pageNumber, object Params)
         {
-            List<Dictionary<string, string>> appList = new List<Dictionary<string, string>>();
+            int offset = numberOfRecords * pageNumber;
+            var Querries = QueryMaker.GetPagerQueries<T>(query, sortBy, order, offset, numberOfRecords);
+            string mainquery = Querries.Query;
+            string countquery = Querries.CountQuery;
+            return PagedResults<T>(numberOfRecords, pageNumber, Params, offset, mainquery, countquery);
+        }
+        public PageListObject<T> GetPagedList<T>(string query, Dictionary<string, string> sortAndOrder, int numberOfRecords, int pageNumber, object Params)
+        {
+            int offset = numberOfRecords * pageNumber;
+            var Querries = QueryMaker.GetPagerQueries<T>(query, sortAndOrder, offset, numberOfRecords);
+            string mainquery = Querries.Query;
+            string countquery = Querries.CountQuery;
+            return PagedResults<T>(numberOfRecords, pageNumber, Params, offset, mainquery, countquery);
+        }
+
+
+        public T Get<T>(string query = null, string whereClause = null, object Params = null)
+        {
+            T t = Activator.CreateInstance<T>();
+            List<PropertyInfo> properties = GetReadableProperties<T>();
+            query = QueryMaker.SelectQuery<T>(query, whereClause);
             using (SqlConnection Connection = new SqlConnection(ConnectionString))
             {
                 Connection.Open();
@@ -20,34 +43,89 @@ namespace Zetawars.ORM
                 {
                     while (reader.Read())
                     {
-                        Dictionary<string, string> app = new Dictionary<string, string>();
-                        for (int i = 0; i < reader.FieldCount; i++)
+                        foreach (var property in properties)
                         {
-                            app.Add(reader.GetName(i), reader[reader.GetName(i)].ToString());
+                            DBReader(t, property, reader);
                         }
-                        appList.Add(app);
                     }
                 }
                 Connection.Close();
             }
-            return appList;
+            return t;
         }
-        public PageListObject<T> GetPagedList<T>(string query, string sortBy, string order, int numberOfRecords, int pageNumber, Dictionary<string, string> Params)
+
+        public List<T> GetAll<T>(string query = null, string whereClause = null, object Params = null)
         {
-            int offset = numberOfRecords * pageNumber;
-            var Querries = QueryMaker.GetPagerQueries<T>(query, sortBy, order, offset, numberOfRecords);
-            string mainquery = Querries.Query;
-            string countquery = Querries.CountQuery;
-            return PagedResults<T>(numberOfRecords, pageNumber, Params, offset, mainquery, countquery);
+            var results = new List<T>();
+            var properties = GetReadableProperties<T>();
+            query = QueryMaker.SelectQuery<T>(query, whereClause);
+            using (SqlConnection Connection = new SqlConnection(ConnectionString))
+            {
+                Connection.Open();
+                SqlCommand cmd = GetSqlCommandWithParams(query, Connection, Params);
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        var item = Activator.CreateInstance<T>();
+                        foreach (var property in properties)
+                        {
+                            DBReader(item, property, reader);
+                        }
+                        results.Add(item);
+                    }
+                }
+                Connection.Close();
+                return results;
+            }
         }
-        public PageListObject<T> GetPagedList<T>(string query, Dictionary<string, string> sortAndOrder, int numberOfRecords, int pageNumber, Dictionary<string, string> Params)
+        public List<dynamic> GetAll(string query, object Params = null)
         {
-            int offset = numberOfRecords * pageNumber;
-            var Querries = QueryMaker.GetPagerQueries<T>(query, sortAndOrder, offset, numberOfRecords);
-            string mainquery = Querries.Query;
-            string countquery = Querries.CountQuery;
-            return PagedResults<T>(numberOfRecords, pageNumber, Params, offset, mainquery, countquery);
+            var ResultList = new List<dynamic>();
+            using (SqlConnection Connection = new SqlConnection(ConnectionString))
+            {
+                Connection.Open();
+                SqlCommand cmd = GetSqlCommandWithParams(query, Connection, Params);
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        var Result = new ExpandoObject();
+
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            AddProperty(Result, reader.GetName(i), reader[reader.GetName(i)].ToString());
+                        }
+                        ResultList.Add(Result);
+                    }
+                }
+                Connection.Close();
+            }
+            return ResultList;
         }
+
+
+
+        public DataTable ReadDataTable(string query)
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection Connection = new SqlConnection())
+            {
+                SqlDataAdapter sda = new SqlDataAdapter();
+                Connection.Open();
+                SqlCommand cmd = new SqlCommand(query, Connection);
+                sda.SelectCommand = cmd;
+                sda.Fill(dt);
+                return dt;
+            }
+
+        }
+        #endregion
+
+
+        #region private functions
         private PageListObject<T> PagedResults<T>(int numberOfRecords, int pageNumber, object Params, int offset, string mainquery, string countquery)
         {
 
@@ -95,112 +173,14 @@ namespace Zetawars.ORM
             return pager;
         }
 
-
-        public Dictionary<string, string> QueryRow(string query, object Params = null)
+        private static void AddProperty(ExpandoObject dynamicObject, string propertyName, object propertyValue)
         {
-            Dictionary<string, string> appList = new Dictionary<string, string>();
-            using (SqlConnection Connection = new SqlConnection(ConnectionString))
-            {
-                Connection.Open();
-                SqlCommand cmd = GetSqlCommandWithParams(query, Connection, Params);
-                SqlDataReader reader = cmd.ExecuteReader();
-                if (reader.HasRows)
-                {
-                    while (reader.Read())
-                    {
-                        for (int i = 0; i < reader.FieldCount; i++)
-                        {
-                            appList.Add(reader.GetName(i), reader[reader.GetName(i)].ToString());
-                        }
-                        break;
-                    }
-                }
-                Connection.Close();
-            }
-            return appList;
-        }
-        public List<string> QueryColumn(string query, object Params)
-        {
-            List<string> list = new List<string>();
-            using (SqlConnection Connection = new SqlConnection(ConnectionString))
-            {
-                Connection.Open();
-                SqlCommand cmd = GetSqlCommandWithParams(query, Connection, Params);
-                SqlDataReader reader = cmd.ExecuteReader();
-                if (reader.HasRows)
-                {
-                    while (reader.Read())
-                    {
-                        list.Add(reader[reader.GetName(0)].ToString());
-                    }
-                }
-                Connection.Close();
-            }
-            return list;
-        }
-        public T Get<T>(string query = null, string whereClause = null, object Params = null)
-        {
-            T t = Activator.CreateInstance<T>();
-            List<PropertyInfo> properties = GetReadableProperties<T>();
-            query = QueryMaker.SelectQuery<T>(query, whereClause);
-            using (SqlConnection Connection = new SqlConnection(ConnectionString))
-            {
-                Connection.Open();
-                SqlCommand cmd = GetSqlCommandWithParams(query, Connection, Params);
-                SqlDataReader reader = cmd.ExecuteReader();
-                if (reader.HasRows)
-                {
-                    while (reader.Read())
-                    {
-                        foreach (var property in properties)
-                        {
-                            DBReader(t, property, reader);
-                        }
-                    }
-                }
-                Connection.Close();
-            }
-            return t;
-        }
-        public List<T> GetList<T>(string query = null, string whereClause = null, object Params = null)
-        {
-            var results = new List<T>();
-            var properties = GetReadableProperties<T>();
-            query = QueryMaker.SelectQuery<T>(query, whereClause);
-            using (SqlConnection Connection = new SqlConnection(ConnectionString))
-            {
-                Connection.Open();
-                SqlCommand cmd = GetSqlCommandWithParams(query, Connection, Params);
-                SqlDataReader reader = cmd.ExecuteReader();
-                if (reader.HasRows)
-                {
-                    while (reader.Read())
-                    {
-                        var item = Activator.CreateInstance<T>();
-                        foreach (var property in properties)
-                        {
-                            DBReader(item, property, reader);
-                        }
-                        results.Add(item);
-                    }
-                }
-                Connection.Close();
-                return results;
-            }
-        }
-        public DataTable ReadDataTable(string query)
-        {
-            DataTable dt = new DataTable();
-            using (SqlConnection Connection = new SqlConnection())
-            {
-                SqlDataAdapter sda = new SqlDataAdapter();
-                Connection.Open();
-                SqlCommand cmd = new SqlCommand(query, Connection);
-                sda.SelectCommand = cmd;
-                sda.Fill(dt);
-                return dt;
-            }
-
+            //Take use of the IDictionary implementation
+            var expandoDict = dynamicObject as IDictionary<string, object>;
+            if (expandoDict.ContainsKey(propertyName))
+                expandoDict[propertyName] = propertyValue;
+            else
+                expandoDict.Add(propertyName, propertyValue);
         }
         #endregion
     }
