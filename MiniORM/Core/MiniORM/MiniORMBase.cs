@@ -40,6 +40,11 @@ namespace Zetawars.ORM
                 property.SetValue(_Object, null);
             }
         }
+        private object ConvertTo(Type convertTo, object value)
+        {
+            convertTo = Nullable.GetUnderlyingType(value.GetType()) ?? value.GetType();
+            return Convert.ChangeType(value, convertTo);
+        }
         #endregion Private methods
     }
 

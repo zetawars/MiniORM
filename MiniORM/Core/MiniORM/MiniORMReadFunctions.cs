@@ -54,6 +54,32 @@ namespace Zetawars.ORM
             return t;
         }
 
+
+        public dynamic Get(string query = null, string whereClause = null, object Params = null)
+        {
+            dynamic d = new ExpandoObject();
+            using (SqlConnection Connection = new SqlConnection(ConnectionString))
+            {
+                Connection.Open();
+                SqlCommand cmd = GetSqlCommandWithParams(query, Connection, Params);
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            var propName = reader.GetName(i);
+                            AddProperty(d, propName, ConvertTo(reader.GetFieldType(i), reader[propName]));
+                        }
+                    }
+                }
+
+                Connection.Close();
+            }
+            return d;
+        }
+
         public List<T> GetAll<T>(string query = null, string whereClause = null, object Params = null)
         {
             var results = new List<T>();
@@ -96,7 +122,9 @@ namespace Zetawars.ORM
 
                         for (int i = 0; i < reader.FieldCount; i++)
                         {
-                            AddProperty(Result, reader.GetName(i), reader[reader.GetName(i)].ToString());
+                            var propName = reader.GetName(i);
+                            AddProperty(Result, propName, ConvertTo(reader.GetFieldType(i), reader[propName]));
+                           // AddProperty(Result, reader.GetName(i), reader[reader.GetName(i)].ToString());
                         }
                         ResultList.Add(Result);
                     }

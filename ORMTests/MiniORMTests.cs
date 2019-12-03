@@ -15,10 +15,8 @@ namespace ORMTests
         public void ReadMethod()
         {
             var orm = new MiniORM("Data Source=(local);Initial Catalog=Scrape;User ID=sa;Password=786");
+            var FirstCategory = orm.Get("SELECT TOP 1 * FROM category");
             var m = orm.GetAll("SELECT * FROM Category");
-            var k = m[0].ID;
-
-
         }
 
         [TestMethod]
