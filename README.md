@@ -35,11 +35,26 @@ this is how you will create a repository for this
     	{
            	return ORM.Get<User>(UserID);
     	}
+	
+	//This is for Single element using dynamic.
+	public dynamic Get(int ID)
+	{
+	        return ORM.Get("SELECT * FROM Users");
+	}
+	
+	
     	// This is for the GetList of User
     	public List<User> GetList()
     	{
          	return ORM.GetList<User>();
     	}
+	
+	//This is for getting dynamically created objects. 
+	public dynamic GetList()
+	{
+		string query = "SELECT * FROM  WITH JOINS";
+		return ORM.GetAll(query);
+	}
     
     	//If you want to pass a custom Query
     	public List<User> GetList()
