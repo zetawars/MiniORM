@@ -36,11 +36,7 @@ this is how you will create a repository for this
            	return ORM.Get<User>(UserID);
     	}
 	
-	//This is for Single element using dynamic.
-	public dynamic Get(int ID)
-	{
-	        return ORM.Get("SELECT * FROM Users");
-	}
+	
 	
 	
     	// This is for the GetList of User
@@ -49,12 +45,7 @@ this is how you will create a repository for this
          	return ORM.GetList<User>();
     	}
 	
-	//This is for getting dynamically created objects. 
-	public dynamic GetList()
-	{
-		string query = "SELECT * FROM  WITH JOINS";
-		return ORM.GetAll(query);
-	}
+	
     
     	//If you want to pass a custom Query
     	public List<User> GetList()
@@ -79,10 +70,20 @@ this is how you will create a repository for this
     
     	// dynamically returned lists are still in progress. right now it uses a List<Dictionary<string,string>> for getting data without classes
     
-    	public List<Dictionary<string,string>> GetList()
-    	{
-        	return DBHelper.QueryList("SELECT * FROM Users");
-    	}
+    	
+	//This is for getting dynamically created objects. 
+	public dynamic GetList()
+	{
+		string query = "SELECT * FROM  WITH JOINS";
+		return ORM.GetAll(query);
+	}
+	
+	//This is for Single element using dynamic.
+	public dynamic Get(int ID)
+	{
+	        return ORM.Get("SELECT * FROM Users");
+	}
+	
 	}
 
 
