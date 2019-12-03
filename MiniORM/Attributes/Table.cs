@@ -1,7 +1,5 @@
-﻿//Author : Shazaki Zetawars //
-using System;
-
-namespace MiniORM
+﻿using System;
+namespace Zetawars.ORM
 {
     public class Table : Attribute
     {
@@ -13,6 +11,5 @@ namespace MiniORM
             this.SchemaName = SchemaName;
         }
     }
-
 }
 

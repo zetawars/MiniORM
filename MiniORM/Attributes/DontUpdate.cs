@@ -1,7 +1,5 @@
-﻿//Author : Shazaki Zetawars //
-using System;
-
-namespace MiniORM
+﻿using System;
+namespace Zetawars.ORM
 {
     public class DontUpdate : Attribute
     {

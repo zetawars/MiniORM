@@ -1,12 +1,9 @@
-﻿//Author : Shazaki Zetawars //
-using System;
-
-namespace MiniORM
+﻿using System;
+namespace Zetawars.ORM
 {
-    public class Key : Attribute
+    public class PrimaryKey : Attribute
     {
 
     }
-
 }
 

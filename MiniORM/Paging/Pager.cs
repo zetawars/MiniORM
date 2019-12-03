@@ -1,5 +1,4 @@
-﻿//Author : Shazaki Zetawars //
-namespace MiniORM
+﻿namespace Zetawars.ORM
 {
     public class Pager
     {
@@ -10,6 +9,5 @@ namespace MiniORM
         public int Fetch { get; set; }
         public int TotalPages { get; set; }
     }
-
 }
 

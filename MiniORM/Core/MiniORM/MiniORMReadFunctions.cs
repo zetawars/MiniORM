@@ -2,14 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Reflection;
-//Author : Shazaki Zetawars //
-namespace MiniORM
+namespace Zetawars.ORM
 {
-
-
-    public partial class MiniORM : DB_Common
+    public partial class MiniORM : DBCommon
     {
         #region ReadFunctions
         public List<Dictionary<string, string>> QueryList(string query, object Params = null)
@@ -165,30 +161,6 @@ namespace MiniORM
                 Connection.Close();
             }
             return t;
-        }
-        public bool Get<T>(T _Object, string query = "", string where_clause = "", object Params = null)
-        {
-            List<PropertyInfo> _properties = GetReadableProperties<T>();
-            query = QueryMaker.SelectQuery<T>(query, where_clause);
-
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                connection.Open();
-                SqlCommand cmd = GetSqlCommandWithParams(query, connection, Params);
-                SqlDataReader reader = cmd.ExecuteReader();
-                if (reader.HasRows)
-                {
-                    while (reader.Read())
-                    {
-                        foreach (PropertyInfo pi in _properties)
-                        {
-                            DBReader(_Object, pi, reader);
-                        }
-                    }
-                }
-                connection.Close();
-                return true;
-            }
         }
         public List<T> GetList<T>(string query = null, string whereClause = null, object Params = null)
         {

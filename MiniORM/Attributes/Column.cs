@@ -1,7 +1,6 @@
-﻿//Author : Shazaki Zetawars //
-using System;
+﻿using System;
 
-namespace MiniORM
+namespace Zetawars.ORM
 {
     public class Column : Attribute
     {

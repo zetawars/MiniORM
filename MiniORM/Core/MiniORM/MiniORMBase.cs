@@ -4,12 +4,9 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
-//Author : Shazaki Zetawars //
 namespace Zetawars.ORM
 {
-
-
-    public partial class MiniORM : DB_Common
+    public partial class MiniORM : DBCommon
     {
         private string ConnectionString { get; set; }
 
@@ -17,10 +14,6 @@ namespace Zetawars.ORM
         {
             this.ConnectionString = ConnectionString;
         }
-
-
-       
-        
 
         #region Private methods   
         private SqlCommand GetSqlCommandWithParams(string query, SqlConnection Connection, object Params)
