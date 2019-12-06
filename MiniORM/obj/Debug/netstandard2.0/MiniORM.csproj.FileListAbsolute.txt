@@ -14,3 +14,4 @@ D:\MiniORM\MiniORM\MiniORM\obj\Debug\netstandard2.0\MiniORM.AssemblyInfoInputs.c
 D:\MiniORM\MiniORM\MiniORM\obj\Debug\netstandard2.0\MiniORM.AssemblyInfo.cs
 D:\MiniORM\MiniORM\MiniORM\obj\Debug\netstandard2.0\MiniORM.dll
 D:\MiniORM\MiniORM\MiniORM\obj\Debug\netstandard2.0\MiniORM.pdb
+D:\MiniORM\MiniORM\MiniORM\obj\Debug\netstandard2.0\MiniORM.csprojAssemblyReference.cache

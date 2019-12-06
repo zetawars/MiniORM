@@ -4,19 +4,27 @@ using System.Collections.Generic;
 using Zetawars.ORM;
 namespace ORMTests
 {
+    public class Category2
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+    }
+
+
+
+
+
     [TestClass]
     public class MiniORMTest
     {
-
         
 
-
-        [TestMethod]
+         [TestMethod]
         public void ReadMethod()
         {
-            var orm = new MiniORM("Data Source=(local);Initial Catalog=Scrape;User ID=sa;Password=786");
-            var FirstCategory = orm.Get("SELECT TOP 1 * FROM category");
-            var m = orm.GetAll("SELECT * FROM Category");
+            var orm = new MiniORMDev("Data Source=(local);Initial Catalog=Scrape;User ID=sa;Password=786");
+            var FirstCategory = orm.Get<Category2>("SELECT TOP 1 * FROM category2");
+            var m = orm.GetAll("SELECT * FROM Category2");
         }
 
         [TestMethod]
