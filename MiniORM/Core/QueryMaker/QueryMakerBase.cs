@@ -59,18 +59,7 @@ END CATCH ";
                 System.Reflection.BindingFlags.DeclaredOnly
                 ).ToList().Where(x => !(Attribute.IsDefined(x, typeof(DontUpdate))) && !(Attribute.IsDefined(x, typeof(PrimaryKey)))).ToList();
         }
-        private static string GetColumnName(PropertyInfo pi)
-        {
-            if (Attribute.IsDefined(pi, typeof(Column)))
-            {
-                Column k = (Column)Attribute.GetCustomAttribute(pi, typeof(Column));
-                return $"[{k.Name}]";
-            }
-            else
-            {
-                return $"[{pi.Name}]";
-            }
-        }
+        
         private static string GetTableName<T>()
         {
             if (Attribute.IsDefined(typeof(T), typeof(Table)))

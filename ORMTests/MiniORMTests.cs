@@ -22,9 +22,13 @@ namespace ORMTests
          [TestMethod]
         public void ReadMethod()
         {
-            var orm = new MiniORMDev("Data Source=(local);Initial Catalog=Scrape;User ID=sa;Password=786");
-            var FirstCategory = orm.Get<Category2>("SELECT TOP 1 * FROM category2");
-            var m = orm.GetAll("SELECT * FROM Category2");
+            var orm = new MiniORM("Data Source=(local);Initial Catalog=CVS;User ID=Zawar;Password=DreamGirl143");
+            var FirstCategory = orm.Get("SELECT TOP 1 * FROM category");
+
+            var m = FirstCategory[0].ID;
+
+            var k = 0;
+
         }
 
         [TestMethod]

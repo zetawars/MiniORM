@@ -74,7 +74,6 @@ namespace Zetawars.ORM
                         }
                     }
                 }
-
                 Connection.Close();
             }
             return d;

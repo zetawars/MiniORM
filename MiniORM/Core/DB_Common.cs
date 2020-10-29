@@ -15,6 +15,19 @@ namespace Zetawars.ORM
         {
             return typeof(T).GetProperties().Where(x => !(Attribute.IsDefined(x, typeof(DontRead)))).ToList();
         }
+
+        protected static string GetColumnName(PropertyInfo pi)
+        {
+            if (Attribute.IsDefined(pi, typeof(Column)))
+            {
+                Column k = (Column)Attribute.GetCustomAttribute(pi, typeof(Column));
+                return $"[{k.Name}]";
+            }
+            else
+            {
+                return $"[{pi.Name}]";
+            }
+        }
     }
 }
 
