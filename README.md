@@ -12,7 +12,7 @@ You would create User.cs
     	public string FirstName {get;set;}
     	public string LastName {get;set;}
     	public DateTime LastLoginDate{get;set;}
-    	[Column("Blocked")] // Suppose that ColumnName is different from the Entity class.
+    	[Column("Blocked")] // Suppose that Column Name is different in database.
     	public bool Status {get;set;}
 	}
 
@@ -28,9 +28,14 @@ this is how you will create a repository for this
         }
 
         // This is for the GetSingle User
-        public User Get(int UserID)
+        public User Get(int userId)
         {
-            return ORM.Get<User>(UserID);
+            return ORM.Get<User>(userId);
+        }
+        // get an object without creating a class
+        public dynamic(int userId)
+        {
+            return ORM.Get(userId);
         }
 
         // This is for the GetList of User
@@ -45,8 +50,14 @@ this is how you will create a repository for this
             return ORM.GetList<User>("SELECT * FROM Users Where FirstName = @FirstName", new { FirstName = "Zawar" });
         }
 
+        //get dynamic List
+        public List<dynamic> GetList()
+        {
+            return ORM.GetList("SELECT * FROM User");
+        }
+
         //This is how to insert
-        public bool Inser(User u)
+        public bool Insert(User u)
         {
             return ORM.Insert(u);
         }
@@ -55,20 +66,6 @@ this is how you will create a repository for this
         public bool Update(User u)
         {
             return ORM.Update(u, "Where ID = @ID", new { ID = u.ID });
-        }
-
-        // dynamically returned lists are still in progress.
-        //This is for getting dynamically created objects. 
-        public dynamic GetList()
-        {
-            string query = "SELECT * FROM Users INNER JOIN Roles ON Roles.UserID = Users.ID";
-            return ORM.GetAll(query); // This returns dynamic list.
-        }
-
-        //This is for Single element using dynamic.
-        public dynamic Get(int ID)
-        {
-            return ORM.Get("SELECT * FROM Users"); // this returns a dynamic single element
         }
     }
 
@@ -93,11 +90,10 @@ something like
       string SelectQuery = QueryMaker.SelectQuery<User>();
       string InsertQuery = QueryMaker.InsertQuery(user);
       string UpdateQuery = QueryMaker.UpdateQuery(user); //when updating with the Key value.
-      string UpdateQuery = QueryMaker.UpdateQuery(user, "Where ID = @ID", new {ID = 1}); // Or pass a custom condition. Currently I am unable to pass the Where Condition as a predicate.
+      string UpdateQuery = QueryMaker.UpdateQuery(user, "Where ID = @ID", new {ID = 1}); // Or pass a custom condition.
       
 And then you can concatenate these to do a transaction. by using BeginTransQuery and CommitTransQuery. 
-
-	 
+ 
 	 string query = QueryMaker.BeginTransQuery;// Starting Transaction
 	 query += QueryMaker.InsertQuery(user);
 	 query += QueryMaker.UpdateQuery(user);
