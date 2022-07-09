@@ -17,15 +17,35 @@ namespace ORMTests
     [TestClass]
     public class MiniORMTest
     {
+
+
+        public class Filter
+        {
+            public string Name { get; set; }
+        }
+
         
+        [Table("CustomerContact", SchemaName ="Customers")]
+        public class Customer
+        {
+            public int CrmCustomerId { get; set; }
+            public string Name { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+        }
 
          [TestMethod]
         public void ReadMethod()
         {
-            var orm = new MiniORM("Data Source=(local);Initial Catalog=CVS;User ID=Zawar;Password=DreamGirl143");
-            var FirstCategory = orm.Get("SELECT TOP 1 * FROM category");
+            var orm = new MiniORM("Server=tcp:cnssql.database.windows.net,1433;Initial Catalog=TargetCrmStaging;Persist Security Info=False;User ID=csystemsdev;Password=Fort2dev{sKyp;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;workstation id=surveyService");
 
-            var m = FirstCategory[0].ID;
+            var c = new Filter
+            {
+                Name = "Zawar"
+            };
+            var FirstCategory = orm.GetAll("SELECT TOP 1 * FROM Customers.CustomerContact");
+
+            var m = FirstCategory[0].Name;
 
             var k = 0;
 

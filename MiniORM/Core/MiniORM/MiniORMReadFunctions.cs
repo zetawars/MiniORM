@@ -55,7 +55,7 @@ namespace Zetawars.ORM
         }
 
 
-        public dynamic Get(string query = null, string whereClause = null, object Params = null)
+        public dynamic Get(string query = null, object Params = null)
         {
             dynamic d = new ExpandoObject();
             using (SqlConnection Connection = new SqlConnection(ConnectionString))
@@ -83,7 +83,7 @@ namespace Zetawars.ORM
         {
             var results = new List<T>();
             var properties = GetReadableProperties<T>();
-            query = QueryMaker.SelectQuery<T>(query, whereClause);
+            query = QueryMaker.SelectQueryParams<T>(query, whereClause, Params);
             using (SqlConnection Connection = new SqlConnection(ConnectionString))
             {
                 Connection.Open();
@@ -105,6 +105,7 @@ namespace Zetawars.ORM
                 return results;
             }
         }
+
         public List<dynamic> GetAll(string query, object Params = null)
         {
             var ResultList = new List<dynamic>();
@@ -118,12 +119,10 @@ namespace Zetawars.ORM
                     while (reader.Read())
                     {
                         var Result = new ExpandoObject();
-
                         for (int i = 0; i < reader.FieldCount; i++)
                         {
                             var propName = reader.GetName(i);
                             AddProperty(Result, propName, ConvertTo(reader.GetFieldType(i), reader[propName]));
-                           // AddProperty(Result, reader.GetName(i), reader[reader.GetName(i)].ToString());
                         }
                         ResultList.Add(Result);
                     }

@@ -8,8 +8,6 @@ namespace Zetawars.ORM
     public partial class QueryMaker : DBCommon
     {
         #region Public methods
-
-
         public static string UpdateQuery<T>(T _Object, string whereClause = null, string tableName = null)
         {
             var properties = GetUpdateProperties<T>();
@@ -28,13 +26,7 @@ namespace Zetawars.ORM
             UpdateQueryBuilder.Append($" {whereClause}");
             return UpdateQueryBuilder.ToString();
         }
-
-
-
         #endregion Public methods
-
-
-
     }
 
 }

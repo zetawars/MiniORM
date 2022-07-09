@@ -33,6 +33,41 @@ namespace Zetawars.ORM
 
             return queryBuilder.ToString();
         }
+        public static string SelectQueryParams<T>(string query = null, string whereClause = null, object Params = null)
+        {
+            var queryBuilder = new StringBuilder();
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                List<PropertyInfo> _properties = GetReadableProperties<T>();
+                queryBuilder.Append("SELECT ");
+                foreach (var element in _properties)
+                {
+                    queryBuilder.Append($"[{element.Name}], ");
+                }
+                queryBuilder.Length -= 2;
+                queryBuilder.Append($" FROM {GetTableName<T>()}");
+            }
+            else
+            {
+                queryBuilder.Append(query);
+            }
+            if (!string.IsNullOrWhiteSpace(whereClause))
+            {
+                queryBuilder.Append($" {whereClause}");
+            }
+            else if (Params != null) 
+            {
+                queryBuilder.Append($" WHERE ");
+                var _params = Params.GetType().GetProperties();
+                foreach (var element in _params)
+                {
+                    queryBuilder.Append($" {element.Name} = @{element.Name}, ");
+                }
+                queryBuilder.Length -= 2;
+            }
+            return queryBuilder.ToString();
+        }
+
         public static PagedQuery GetPagerQueries<T>(string query, string sortBy, string order, int offset, int numberOfRecords)
         {
             string mainquery = $"SELECT * FROM ({  query ?? SelectQuery<T>(query, "")}) MyList order by {sortBy} {order} offset {offset} rows fetch next {numberOfRecords} rows only";

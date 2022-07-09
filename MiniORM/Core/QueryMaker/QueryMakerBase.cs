@@ -7,6 +7,7 @@ namespace Zetawars.ORM
 {
     public partial class QueryMaker : DBCommon
     {
+        private const BindingFlags BindingAttr = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
         #region Public methods
         private static string DefaultWhereClause<T>(T Object)
         {
@@ -45,19 +46,12 @@ END CATCH ";
      
         private static List<PropertyInfo> GetInsertProperties<T>()
         {
-            return typeof(T).GetProperties(
-                System.Reflection.BindingFlags.Public | 
-                System.Reflection.BindingFlags.Instance | 
-                System.Reflection.BindingFlags.DeclaredOnly
-                ).ToList().Where(x => !(Attribute.IsDefined(x, typeof(DontInsert))) && !(Attribute.IsDefined(x, typeof(PrimaryKey)))).ToList();
+            return typeof(T).GetProperties(BindingAttr).ToList().Where(x => !(Attribute.IsDefined(x, typeof(DontInsert))) && !(Attribute.IsDefined(x, typeof(PrimaryKey)))).ToList();
         }
         private static List<PropertyInfo> GetUpdateProperties<T>()
         {
-            return typeof(T).GetProperties(
-                System.Reflection.BindingFlags.Public | 
-                System.Reflection.BindingFlags.Instance | 
-                System.Reflection.BindingFlags.DeclaredOnly
-                ).ToList().Where(x => !(Attribute.IsDefined(x, typeof(DontUpdate))) && !(Attribute.IsDefined(x, typeof(PrimaryKey)))).ToList();
+            return typeof(T).GetProperties(BindingAttr)
+                .ToList().Where(x => !(Attribute.IsDefined(x, typeof(DontUpdate))) && !(Attribute.IsDefined(x, typeof(PrimaryKey)))).ToList();
         }
         
         private static string GetTableName<T>()
